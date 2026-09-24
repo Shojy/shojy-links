@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shojy/talk-notes</title>
+<meta name="description" content="Shojy's notes on conference and meetup talks - NDC, DDD North, Leeds Sharp and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-alt:#f4f4f5;
+    --border:#e4e4e7;
+    --fg:#18181b;
+    --fg-dim:#71717a;
+    --accent:#9333ea;
+    --accent-dim:#7e22ce;
+    --accent-soft:#f3e8ff;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d0d0d; --bg-alt:#18181b; --border:#27272a; --fg:#e4e4e7; --fg-dim:#8b8b93; --accent:#c084fc; --accent-dim:#a855f7; --accent-soft:rgba(147,51,234,0.35); color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d0d0d; --bg-alt:#18181b; --border:#27272a; --fg:#e4e4e7; --fg-dim:#8b8b93; --accent:#c084fc; --accent-dim:#a855f7; --accent-soft:rgba(147,51,234,0.35); color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg-alt);
+    color:var(--fg);
+    font-family:'Fira Sans', system-ui, sans-serif;
+    padding-inline:16px;
+    padding-block:36px;
+    display:flex;
+    justify-content:center;
+  }
+  .repo{
+    width:100%;
+    max-width:680px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--bg);
+    box-shadow:0 24px 60px -28px rgba(0,0,0,0.35);
+    overflow:hidden;
+  }
+
+  .repo-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 20px;
+    border-bottom:1px solid var(--border);
+    font-family:'Fira Code', monospace;
+    font-size:13px;
+  }
+  .repo-bar a{ color:inherit; text-decoration:none; }
+  .repo-bar a:hover, .repo-bar a:focus-visible{ color:var(--accent); }
+  .repo-bar b{ font-weight:600; }
+  .repo-bar .sep{ color:var(--fg-dim); }
+  .repo-bar .visibility{
+    font-size:10.5px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:1px 8px;
+    color:var(--fg-dim);
+  }
+
+  .picker{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 20px;
+    border-bottom:1px solid var(--border);
+    font-family:'Fira Code', monospace;
+    font-size:12.5px;
+  }
+  .picker label{ color:var(--fg-dim); }
+  .select-wrap{
+    position:relative;
+    flex:0 1 auto;
+    min-width:0;
+    color:var(--fg-dim);
+  }
+  .select-wrap::after{
+    content:'';
+    position:absolute;
+    right:11px;
+    top:50%;
+    width:6px;height:6px;
+    border-right:1.5px solid currentColor;
+    border-bottom:1.5px solid currentColor;
+    transform:translateY(-70%) rotate(45deg);
+    pointer-events:none;
+  }
+  .picker select{
+    appearance:none;
+    -webkit-appearance:none;
+    max-width:100%;
+    font:inherit;
+    font-weight:600;
+    color:var(--fg);
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:6px 32px 6px 10px;
+    cursor:pointer;
+    text-overflow:ellipsis;
+  }
+  .picker select:hover{ border-color:var(--accent); }
+  .picker select:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .main{ padding:24px 26px 32px; }
+
+  h1{
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 2px;
+    letter-spacing:-0.01em;
+  }
+  .tagline{ font-size:13px; color:var(--fg-dim); margin-bottom:20px; }
+  .tagline a{ color:var(--accent-dim); text-decoration:none; }
+  .tagline a:hover{ text-decoration:underline; }
+  :root[data-theme="dark"] .tagline a{ color:var(--accent); }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .tagline a{ color:var(--accent); } }
+
+  .event-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px 10px;
+  }
+  .event-name{ font-size:16px; font-weight:600; }
+  .event-count{ font-size:12px; color:var(--fg-dim); }
+  .topic{
+    font-family:'Fira Code', monospace;
+    font-size:10.5px;
+    padding:3px 9px;
+    border-radius:20px;
+    background:var(--accent-soft);
+    color:var(--accent-dim);
+  }
+  :root[data-theme="dark"] .topic{ color:var(--accent); }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .topic{ color:var(--accent); } }
+
+  h2{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--fg-dim);
+    font-weight:600;
+    margin:24px 0 8px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .link-list{ display:flex; flex-direction:column; list-style:none; margin:0; padding:0; }
+  .link-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:var(--fg);
+    padding:10px 8px;
+    border-radius:6px;
+    font-size:13.5px;
+    border-bottom:1px solid var(--border);
+  }
+  .link-list li:last-child .link-row{ border-bottom:none; }
+  .link-row:hover, .link-row:focus-visible{ background:var(--accent-soft); }
+  .link-row:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .link-row .ico{
+    width:24px;height:24px;
+    border-radius:6px;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--fg-dim);
+    flex:none;
+    transition:color 0.12s ease, border-color 0.12s ease;
+  }
+  .link-row .ico svg{ width:14px; height:14px; display:block; }
+  .link-row:hover .ico, .link-row:focus-visible .ico{
+    color:var(--accent);
+    border-color:var(--accent);
+  }
+  .link-row .label{ font-weight:500; flex:1; line-height:1.4; }
+
+  .sr-only{
+    position:absolute;
+    width:1px;height:1px;
+    margin:-1px;padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  .footer{
+    margin-top:28px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+    font-family:'Fira Code', monospace;
+    font-size:11.5px;
+    color:var(--fg-dim);
+  }
+
+  @media (max-width:520px){
+    .main{ padding:20px 18px 26px; }
+    .picker{ padding:10px 18px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="repo">
+  <div class="repo-bar">
+    <a href="../"><b>shojy</b></a><span class="sep">/</span>talk-notes
+    <span class="visibility">public</span>
+  </div>
+
+  <div class="picker" hidden>
+    <label for="event-select">event</label>
+    <span class="select-wrap">
+      <select id="event-select">
+        <option value="ndc-oslo" selected>NDC Oslo 2026 (14 talks)</option>
+        <option value="leeds-sharp">Leeds Sharp (5 talks)</option>
+        <option value="technext">TechNExt 2026 (5 talks)</option>
+        <option value="ddd-north">DDD North 2026 (5 talks)</option>
+        <option value="ndc-london">NDC London 2026 (16 talks)</option>
+        <option value="ndc-manchester">NDC Manchester 2025 (10 talks)</option>
+      </select>
+    </span>
+  </div>
+
+  <div class="main">
+      <h1>Talk notes</h1>
+      <div class="tagline">AI-generated notes from conferences and meetups, captured with <a href="https://www.plaud.ai/" target="_blank" rel="noopener">Plaud</a></div>
+
+      <section class="panel" id="panel-ndc-oslo" aria-label="NDC Oslo">
+        <div class="event-head">
+          <span class="event-name">NDC Oslo 2026</span>
+          <span class="topic">September 2026</span>
+          <span class="event-count">14 talks</span>
+        </div>
+        <h2>16 September</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_e6d156c3-8395-4e97-ba24-5976e91eeb7c::y8kkWXVW0nNdw6rE9xFphzJQBiZ0DhkOgO8d66OBD1PV8CuMR0qNYlj3LZ_bb-JFLaqAyNdJBnvYiFaODHEC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Migrating ASP.NET Core MVC Web API to Minimal APIs &mdash; Routing, DI, Validation, Typed Results, Structure, Performance</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_0838adce-5c1c-4463-89f0-3b4b92f8b731::faqQJWPjwtOm5r72ZZMn2dB8b3NCHSVAjn5EKZtz-KCEI3ny185Z9AuGhjrG1CBG2s6vCrXfwGUdxZVX3KsC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">GDPR Data Access and Re-identification from Spotify Extended Streaming History</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_65ec0d92-c757-4bc2-b704-abd4f37116f1::mKMc-ysNYSSvCeL_No6Rney2x48KjbAA81XiUSQOPDSpTLfi_sxO_SPruR7H7ApFNpKXBwb7VDj-Sgb_8ikC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Norwegian Coastal Administration's Data Platform and AIS Data</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_6ba3c698-e747-45b4-8ae7-f40d876babcb::hN4HNIWgn9eBefiXhAjYvlFtE7dvfsZ5E6nsGxEwvIpjJUBm-A3BNyqCifImex5BceE2t14NUKIKtd-VGpkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Modern Graph Databases</span>
+          </a></li>
+        </ul>
+        <h2>17 September</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_612a4e92-a91f-4fb0-a568-962ab1508d9f::fFNrOmKevUvMuZrZP-RiEe-wWBigaTX9EvEzWJO75l50i9QDMpL9pJPEbtpxkEl93Tw6bPhJ7aAsFLoQYzoC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Insulin Pump Software Testing Failures</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_7da86b58-af2c-41ee-ba97-e469e344a808::eb7M9v7FiEsrpChC1Dx4gcEQVzLwPRrBwBIzoF8HbMJnMbQoql-FSbbmC4uMKp2FkzW0dqcCJf31Jmy1_VcC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Advanced .NET Testing Techniques and Flaky Test Management</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_5c574c62-c148-48f0-b5ea-239f88a3a82b::E6NG4nBIsJO18fYeI1W_oB1pMTI800xb4SdPFOEOC6R5gLR6lVxwNxgIehihLVrlVCcsz2OncTUiZS7RBwkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Angular Todo App Pitfalls and Healthier Alternatives</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_2faab417-5d0c-42d5-bca8-8cec262230c5::Db5Mzng_sqC9VR1pBSMR-J0soCtjV9q4NWToj4XGGm9_Yuwt_VkyOe4JGVb5QDK_ELbWjglFTNdanoP3L5EC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">OWASP Top Ten 2025 for .NET Developers</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_4b587669-12cc-4246-8c64-d4cbba63a800::XvysQW0CupDDIy-fpmhqPyUNPfxNPM2sQ3XBMiCG2Dh4qLHHFrdRglB6jEtx9ZRgrwPX6wGOlsDQiHzF12EC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Domain-Driven Design with Value Objects and Aggregates in a Knitting App</span>
+          </a></li>
+        </ul>
+        <h2>18 September</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_29ea01d2-2ad0-48a2-9c40-a2573ebdf05b::VJ2pvCbBdU0EhuXW-2hNWaUYnWOiTtaZD4cEwSgz5uvr2Yqn6fUUiqgx5Ly1k4i9Kv3qBCgHgFT6QB0_Hp0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Investigative Tech Journalism at VG &mdash; Hardware Forensics, OSINT, and Field Testing</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_7647f198-008f-4708-8121-a6082652997b::Hr51mBo6IJ-xsMRQqLrBuJpZXDXhU2w6EOOM_4Xsdzrmo3HzPHRHz1mxVSUQ5fLKmMHH1Un9BNwq__JBX-oC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI Data Centers in Space and Space-Based Solar Power</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_aaf76791-384d-4cb6-8115-8e1d2b553f91::zDQI1B6e-WK0gfWO5IVqp04q0bSizkdt8c4RlwnLQuWbOTAbi6j51cFCNu5D3MRUe4pTNBFnEok80VAfGvgC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI-Powered DevOps Security Reviews and OWASP Authorization Controls</span>
+          </a></li>
+        </ul>
+        <h2>19 September</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_d6b0b1ab-eadb-4b45-936d-1f2c4b83abaa::02ngvxC8H43y94MpaGrxhJTeoQGXBle9sDAWIqrow1vw1gZOZ8zI6HHduIqlCbFE2E2uYrQtezYWktFPfQwC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Pragmatic HTTP API Design and Operation</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_bf680df5-e42e-46cf-aed6-b15a1f8f56c4::A6oUzazy2yDl-7cIdAKvHn0SbG-ndVroVxpJBcRFMvIlZQAjtUtkWNBqvefjaK_OTs_dV2OIfR1aKszcbxsC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Claude Code Workflows Beyond Basic Prompting</span>
+          </a></li>
+        </ul>
+      </section>
+      <section class="panel" id="panel-leeds-sharp" aria-label="Leeds Sharp">
+        <div class="event-head">
+          <span class="event-name">Leeds Sharp</span>
+          <span class="topic">Meetup</span>
+          <span class="event-count">5 talks</span>
+        </div>
+        <h2>27 November 2025</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_9378f569-07a8-4ab3-b80c-16237f770f6c::lpsgWlq1wo3OCfsWie2c9s5sG9Gje9jKVzdy0n05PcD-SO2esDMSsKIh_Xt-I2uhTdDnj7K8c63MZ_0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Production-Grade AI Assistants in .NET with Azure OpenAI and MCP &mdash; Testing, State, and Integration</span>
+          </a></li>
+        </ul>
+        <h2>22 January 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_69d770cb-273e-43bc-8a60-abe78548213d::-hUKDggYap7QH2UjEahwfiY--NJU2zabXz03bR5LegvZXKamLtM42CLV1btqEpIKF2SaBiaFs3PisWQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">.NET Aspire for Integration Testing and Local Development</span>
+          </a></li>
+        </ul>
+        <h2>30 April 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_bf7ee7d8-a53e-408c-85a2-f637c412ed97::usCV0aVW1VmHCc9pbLtnUo_R09vPJ7g4H53UNKT8qZXfeMg98_Rf2eqk9WI42es4jihVSgcUxrkV7daCFYkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Agentic AI Coding with Claude &mdash; Specification-Driven Development, Persona Workflows, and Context Hygiene</span>
+          </a></li>
+        </ul>
+        <h2>21 May 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_f0744300-30be-43f2-97c3-c4c7d71fdca9::t3uj1xMqO_PyaVtLpRO6EVdnMNT29lE_wtvf9l3RDPpGOCAoCDh2sp8eRVC22mcqOcYgewQ-0OfyaHfH3Q4C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Generative AI Observability, Multi-Agent Systems, and Financial Compliance</span>
+          </a></li>
+        </ul>
+        <h2>16 July 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_50962e7e-3dd6-4971-bd82-74beb42be84d::6Cb7NP4Eb3Ci33egSCQxokAqMe9tk7H466rSSK1ObBG3BC7zLodH2Aj5349icToEafLyp5KKYuvL_Tcy6qkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Running Large Language Models Locally &mdash; LM Studio, Ollama, and .NET Integration</span>
+          </a></li>
+        </ul>
+      </section>
+      <section class="panel" id="panel-technext" aria-label="TechNExt">
+        <div class="event-head">
+          <span class="event-name">TechNExt 2026</span>
+          <span class="topic">June 2026</span>
+          <span class="event-count">5 talks</span>
+        </div>
+        <h2>June 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_9512ac6e-5174-4b33-8f28-b7b3b3850ecd::g-Ofnfr86nfoJBV2s6OXpI1WyO6Fa6mSrUW6FhG9sZdQ2FRWNhfmoLr6ka7wRat8nkPIMX8HCmrCaiT7c8MC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">W3C Web of Things (WoT), Thing Descriptions, Interoperability Profiles, Discovery, Security, and Smart Building Applications</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_afeffe53-4f63-45d5-bef3-dac6616a7530::ipuEm0drvdqF1xwq9sb6QcfC3ppbHGoyuEtyK9tz2b2kZjGkI3XshfyKwuwC1OUgQf4ryvjM0qqbw6z7mq0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Workshop on Persona Dynamics Platform</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_9b21a451-dc9c-40b5-a94e-e149a04c6699::AQnaXq2S0cSXBrklUJS-5ppQQiO_E91ReaETOZ9d34IK2kVdMmc0uNeQCcZpGZAEbJlXIFzk2kdU_OEaIRMC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Voice of the Customer (VoC) Feedback</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_805ea4d6-fd72-4340-94b6-4d350e41f294::gCI6WIKXq7CEkRlkQ2dijF7LJ6Qz6-CYc30xz36PD1HnIoZpCuNfrYfcMMFEdzSh25C8qcGvVP-YrNYDsc8C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">The Trillion-Dollar Bottleneck: Using AI to Modernise the Code That Runs the World</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_873a2291-677c-46fd-beb8-0226cf96aab7::3iFC4yEQwEsRqa3lZgYjp29f_N8IxPe7Q2US87Ny9ug3rI_WqDQAzDIH1qb3o5uhZLlhPIMqUSbEAWQvcrAC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">The Architect-Developer: Orchestrating the AI-DLC</span>
+          </a></li>
+        </ul>
+      </section>
+      <section class="panel" id="panel-ddd-north" aria-label="DDD North">
+        <div class="event-head">
+          <span class="event-name">DDD North 2026</span>
+          <span class="topic">28 February 2026</span>
+          <span class="event-count">5 talks</span>
+        </div>
+        <h2>28 February 2026</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_5d033d9b-124d-449a-869e-87fd54255388::E04yvKDLbqjfgnsKONDfXyPwFyaGN6MRfBkoDtZDUdyt82HuE9Q_finK2IHTXs8zwSh8JTT0gUWe7WsC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI and Security Vulnerabilities</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_652887d0-0376-48ac-9ecc-b3b5a9548173::2G2gbb44dAM0rx3217MnauK1fM1eR6fJH4-3al5n-VQPS2upSg49sHbL5oEwSz63Ee7eYnvpbxCrROQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Generative AI and Agentic Engineering in Software Development</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_0f5b046b-7592-4755-89f7-1c94e4eb32c8::mDCLXWVSE_1Dm5y4vXW31GwH6EG3i6L9qti1diC-dU4a05EGwiN0AuHXhdr0LLsbyy8LPnY3QZl_NIcC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Code Complexity Metrics and AI-Driven Refinement</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_9a477b41-d2dd-4e2c-99fe-11544d0530de::QaYaSFvd6gHF-P4cGmm6Y9XoBcr-eBaNG82QoUOrRP7GKDPXyQ9XxhBGKZG2JvwBWiB_8ZHh7tXIEFEC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Model Context Protocol (MCP) in Umbraco &mdash; Tool Design, Context Engineering, and Evaluation Practices</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_b6777734-e260-43e0-83b6-787e43bb4463::N5C6qy0HG_mvZzD5mBoDpVdqkH5l4eKy1dCZ4LW1O8P7HsSzhDum_PdGalKL2pRxOIzroU9v2MLcYrwC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Messaging in Software Development</span>
+          </a></li>
+        </ul>
+      </section>
+      <section class="panel" id="panel-ndc-london" aria-label="NDC London">
+        <div class="event-head">
+          <span class="event-name">NDC London 2026</span>
+          <span class="topic">January 2026</span>
+          <span class="event-count">16 talks</span>
+        </div>
+        <h2>28 January</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_822e951e-1eac-4085-b9a9-6ca6da2e5994::y82OwUM-z4NbVbjEV5cn2VG35aNsQQu6biHrdm-GSb5MBcX5OJWzMY0PEQxmlSwvF1nrLNph830qfFgC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Durable Execution and Dapr Workflow Patterns for Reliable Agentic Systems</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_5406a741-d0a4-45f9-ac00-6eb239797f56::wzfwmHostctGDLA_41WItZ90FhpXmx_Q2QEFVzsCRk0DGrRWLW60maa97J8bGe0UkQbjdxR-_-qt-KQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">.NET Interactive, Polyglot Notebooks, and Machine Learning Integration</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_6d91847f-aa32-414e-9478-6ea578f63431::aBC-xRr1Vjea-cevl5qy0v9yg5vD6X4oe1teCa_9hMSpngz2BoNYu79KZt9zHwaD5g_ZF2WmCJhyKkoC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Modern .NET Configuration, Reliability, and Azure Integration</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_0b9d4f6d-420f-4a8c-884f-34d3b7ac4586::yFeghLdGCBSSMjCKRHoIYxQlwNcSgq-zESlXkfExnbqv3rEd37WozuwjPiqUjRjQzEkKGRobVS9f7U4C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI in Software Development</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_9d39787e-2e18-4392-aed2-e63836dda643::ohInW9HphnttBZ7jPka52OR_vdSvm6J0FdCHYXcHDGVMav2lhRRxovVXW0hJS4zrWm4Xe3llYwqWCbQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">C# Pattern Matching Evolution and Application</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_b4f3737b-42eb-4440-925e-8dabb980b8d4::3MRyc2s3zLQwB3VuD9WGjuKIipULq_mXKDrFiO45lE8uwy1SezkqpnQFF9nUCEq4eqUwjoekpRPigO4C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Messaging Patterns for Distributed Systems</span>
+          </a></li>
+        </ul>
+        <h2>29 January</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_96373543-257f-46cd-a0d3-a1648187052c::9YLe2YC3L87tcVqLcqN2udPdbkwXS0f-DeLi8R18nS7qwv967ynWJdOWsVqmy2beAMwUhpnWKQm5dN0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Programming, Art, and the Human Experience</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_846c28f0-8602-444a-94b8-41692777d529::LiUKFHExl2Q7BN-DKUFhXW1gPpIuZ1Aq306tq_Qp-yUklP2wLchMvrVRGhx3wn-a9HE62DqwbA6BR8YC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Code Archaeology Framework</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_8a362c3e-b72f-412c-a074-8f97e6a62598::cz0w8Y73q-SNxnCsimol-jXYyJplSh1ghcMm6whrSzEw_DDBnN8gmAcKIdWR3Q3h2sG2XWXNv7LXebUC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">HTMX with ASP.NET Razor Pages for Server-Driven Web Apps</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_33513a07-840f-454e-b1de-bc21caeff29b::QORLQSw90O04uqjaZsMU1CgJvwTG7ZyoPy6Yex3VDvILCFurwnY3sEEZGgsT2vMGrdM_Y-yeRrmF7G4C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Career Advice for Tech Professionals</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_4301683b-210b-4f53-8c81-fc7c9633fd8f::fqmx5_rb72wF8WLfVIj-nyEO4URMdR0a8eUd3s2xEf9fj9dEaGHg7ehrBms1SDK_aAR9NnE1je5B1V0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Blazor Authentication and BFF Pattern</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_14331e8a-4fb3-4717-b3b6-02673fd1cea0::eiF9d-TmqGFEe7uaNa52vMqWS-fUwZ1W9AhotCY5w1aOhR5_tbOErTyoSGBsCnvlBqxJw-yTATY36PgC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">API Security Mistakes &amp; Best Practices</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_ec3c851b-bbe5-4c4c-85d4-572c96d2d049::6V3npj8pVOmi2HfakK6w2o9U4WqzM5hSW3IX19e5ZZwiy2AmjCNru5duQNqwnbuk5sKItnpvAJ8pfGQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Passwordless Authentication, Passkeys, and ASP.NET Core Implementation</span>
+          </a></li>
+        </ul>
+        <h2>30 January</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_6e2e64e1-0bc4-47e2-be06-9314126f4e4f::jdyRpJwl5s1XqS3uhbQ1RpciAjH8UH1I9Zm1_Xc7YSKOIKy0jYDOV81lq_6UlYDJ6VcnG7-Cw7-bpGcC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Building Reliable and Resilient Software on Microsoft Azure</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_d40b5b09-9f75-4513-939b-dd29b296c0aa::YQTM_qN4qrWXlD0oGQYTFEXl8ph1Fqo82Ib69iZh3KC1cjR4oqFMKcbINNCjaSQg_BY7I_VfI2f0MlUC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI Agent Workflows and Claude Code CLI Strategy</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_6880a520-1e43-416f-af11-a4162397a355::onv85CGRk7-dU3dxi0KfKVy_hPDNkkib0SWWFvW7_GSg-fhiOKeXsDvfkMtVCEcG58GD54XMtvNqvl0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">.NET Aspire for Distributed Applications</span>
+          </a></li>
+        </ul>
+      </section>
+      <section class="panel" id="panel-ndc-manchester" aria-label="NDC Manchester">
+        <div class="event-head">
+          <span class="event-name">NDC Manchester 2025</span>
+          <span class="topic">December 2025</span>
+          <span class="event-count">10 talks</span>
+        </div>
+        <h2>3 December</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_a21e0893-1299-460e-b958-8050f7385d1f::avbJaYeb_hbwtHvmR7VSyV-4bsoQSQgoc6wh_owu9RE-TeqFrpimnWy4OFZJK1vecjd8gp4NVWN6vvIC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">GitHub Actions Security</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_e845d649-495b-4164-aef3-6e6af27008c1::k5gbRMBESr-dSVaFYLLwHIrT02fqd01E6JnrG8ReRF8D3b17Gam2mrpNdfPz4mm_N88vyAS9TuIbHW0C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">.NET Software Supply Chain Security</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_81fcdaea-a51b-4ab4-9326-3f17ae052228::y8HaKEzvolGGdwZLGyCK6QkD-S2-EmOMuCJ0ejjYdVvGoBR7T9Yd7rYoHmbUrhonFRKX3-TJDTEuKIkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Identity and Access Management (IAM) with Microsoft Entra ID</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_ba0ae1ff-bcf7-4d26-bdd4-9fd9d7d6abee::rL3ajdPY-a_0nSqaxnDHavIMGE8oJNqi9cvd0eQt9swZSx5wwGZuPr347jH_5Kcknv1ADfN9hyK5_kwC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Collaborating with AI Coding Assistants</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_b903476d-16a8-4bbd-8136-8330b543dc75::qeogPB1Tk73fBx9obgaMRUuZGT1Yfj4Ib2_6bNDk2wZESMRex2NS7znYdmw8fkhtYx4_1Sb9zfeSYW4C" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Software Supply Chain Security in .NET</span>
+          </a></li>
+        </ul>
+        <h2>4 December</h2>
+        <ul class="link-list">
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_bf6493a6-d2a9-431a-ad9a-3b354e5cf723::A2aynW3dV17D-WJ2nZoeBaAhMNIiJfBVcvvctvGs0wG4PrRiMxA0RYmngF9pQrUfmVsxe7YZtT0eYwQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">C2PA and Content Authenticity</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_47203d3e-130b-48ee-8794-13922af3e23e::2l9RqNHyUE0DLqSq7p2caqwW5Iz90NZcpQ9qWtV2AXpxv4NOmwsCj8zWmc7uLbXarFyooi9ifDKvEJkC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">AI Observability, OpenTelemetry, and LLM Security Guardrails</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_1af49cad-6f30-4a98-8f2b-e0d81443eeb9::sjkEs4hEf4Lv_xpVd3uE1g3Cz9__FEcFp8tLL_dOECMfScav0q2kphTA1ABhns1h2-OsugJ-Q9jredQC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">The Evolution and Ethics of AI Companions</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_f5fe37a7-912e-4dbf-a324-d6a3001c586d::VV6TjNF_5HZIJUkaXWzPaV4YNOFLhdJf6MpQqrg7XFPJ8pz_NOm462G3PuARANuxWn91rhIzNdDi1UgC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Software Supply Chain Security and AI</span>
+          </a></li>
+          <li><a class="link-row" href="https://web.plaud.ai/s/pub_2ec4f021-bb28-4f34-bb05-62aafbc3bc19::Cq8EhREX26kjzxixQtRHrI3fp13fl3ANXKpmoOFBcSlg87ZlAAMFOY6yNtekrFge8pgIdFTGDwF9dqwC" target="_blank" rel="noopener">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5"/><path d="M8.5 13h7M8.5 17h5"/></svg></span>
+            <span class="label">Securing Modern Data Streaming Systems</span>
+          </a></li>
+        </ul>
+      </section>
+
+      <div class="footer">55 talks across 6 events</div>
+    </div>
+
+    <script>
+      (function(){
+        var picker = document.querySelector('.picker');
+        var select = document.getElementById('event-select');
+        var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+        function show(id){
+          select.value = id;
+          panels.forEach(function(p){ p.hidden = p.id !== 'panel-' + id; });
+        }
+
+        function fromHash(){
+          var id = location.hash.slice(1);
+          var valid = Array.prototype.some.call(select.options, function(o){ return o.value === id; });
+          if(!valid && id) history.replaceState(null, '', location.pathname + location.search);
+          show(valid ? id : select.options[0].value);
+        }
+
+        select.addEventListener('change', function(){
+          history.replaceState(null, '', '#' + select.value);
+          show(select.value);
+        });
+
+        picker.hidden = false;
+        window.addEventListener('hashchange', fromHash);
+        fromHash();
+      })();
+    </script>
+</div>
+
+</body>
+</html>
